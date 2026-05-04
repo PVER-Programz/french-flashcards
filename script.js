@@ -1,4 +1,5 @@
 let flashcards = [];
+let originalFlashcards = [];
 let currentIndex = 0;
 let flipped = false;
 
@@ -6,6 +7,7 @@ const card = document.getElementById("card");
 const question = document.getElementById("question");
 const answer = document.getElementById("answer");
 const counter = document.getElementById("counter");
+const progressBar = document.getElementById("progressBar");
 
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
@@ -17,24 +19,31 @@ fetch("flashcards.csv")
 .then(response => response.text())
 .then(data => {
 flashcards = parseCSV(data);
+originalFlashcards = [...flashcards];
 showCard();
 })
 .catch(error => {
 question.textContent = "Could not load flashcards.csv";
+answer.textContent = "Use a local server like VS Code Live Server.";
 console.error(error);
 });
 
 function parseCSV(data) {
 return data
 .trim()
-.split("\n")
+.split(/\r?\n/)
 .map(line => {
 let parts = line.split(",");
 return {
-question: parts[0].trim(),
-answer: parts.slice(1).join(",").trim()
+question: clean(parts[0]),
+answer: clean(parts.slice(1).join(","))
 };
-});
+})
+.filter(card => card.question && card.answer);
+}
+
+function clean(text) {
+return text.trim().replace(/^"|"$/g, "");
 }
 
 function showCard() {
@@ -45,7 +54,9 @@ card.classList.remove("flipped");
 
 question.textContent = flashcards[currentIndex].question;
 answer.textContent = flashcards[currentIndex].answer;
+
 counter.textContent = `${currentIndex + 1} / ${flashcards.length}`;
+progressBar.style.width = `${((currentIndex + 1) / flashcards.length) * 100}%`;
 }
 
 function flipCard() {
@@ -54,18 +65,12 @@ card.classList.toggle("flipped", flipped);
 }
 
 function nextCard() {
-currentIndex++;
-if (currentIndex >= flashcards.length) {
-currentIndex = 0;
-}
+currentIndex = (currentIndex + 1) % flashcards.length;
 showCard();
 }
 
 function prevCard() {
-currentIndex--;
-if (currentIndex < 0) {
-currentIndex = flashcards.length - 1;
-}
+currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length;
 showCard();
 }
 
@@ -79,6 +84,7 @@ showCard();
 }
 
 function resetCards() {
+flashcards = [...originalFlashcards];
 currentIndex = 0;
 showCard();
 }
@@ -91,7 +97,10 @@ shuffleBtn.addEventListener("click", shuffleCards);
 resetBtn.addEventListener("click", resetCards);
 
 document.addEventListener("keydown", event => {
-if (event.key === " ") flipCard();
+if (event.code === "Space") {
+event.preventDefault();
+flipCard();
+}
 if (event.key === "ArrowRight") nextCard();
 if (event.key === "ArrowLeft") prevCard();
 });
