@@ -1,41 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flashcards</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="flashcards.css">
 </head>
 <body>
 
-<div class="app">
-<h1>Study for FAT da nigga.</h1>
-
-<div class="stats">
-<span id="counter">0 / 0</span>
+<main class="app">
+<section class="topbar">
+<div>
+<p class="eyebrow">Study Deck</p>
+<h1>French Flashcards</h1>
 </div>
+<span id="counter" class="pill">0 / 0</span>
+</section>
 
-<div class="card" id="card">
-<div class="card-inner" id="cardInner">
+<section class="progress-wrap">
+<div id="progressBar" class="progress-bar"></div>
+</section>
+
+<section class="card" id="card">
+<div class="card-inner">
 <div class="card-face front">
+<span class="label">Question</span>
 <p id="question">Loading...</p>
 </div>
 <div class="card-face back">
+<span class="label">Answer</span>
 <p id="answer">Answer</p>
 </div>
 </div>
-</div>
+</section>
 
-<div class="buttons">
-<button id="prevBtn">Previous</button>
-<button id="flipBtn">Flip</button>
-<button id="nextBtn">Next</button>
-</div>
+<section class="controls">
+<button id="prevBtn" class="secondary">← Prev</button>
+<button id="flipBtn" class="primary">Flip</button>
+<button id="nextBtn" class="secondary">Next →</button>
+</section>
 
-<div class="buttons">
+<section class="controls small">
 <button id="shuffleBtn">Shuffle</button>
 <button id="resetBtn">Reset</button>
-</div>
-</div>
+</section>
+
+<p class="hint">Tap card to flip • Arrow keys to move • Space to flip</p>
+</main>
 
 <script src="script.js"></script>
 </body>
